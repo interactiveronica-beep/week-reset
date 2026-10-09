@@ -1,1 +1,468 @@
-<!doctype html><meta charset=utf-8><title>Week Reset</title><h1>Week Reset</h1><p>Setting things up — replace this index.html with your planner file.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week Reset — My Ongoing Tool</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f6f4ef;--card:#fff;--ink:#26332f;--muted:#6b7b74;--line:#e3ddd2;
+  --teal:#2f7d78;--teal-soft:#e3f0ee;--gold:#b4842f;--gold-soft:#f7edd8;
+  --rose:#a8544e;--rose-soft:#f6e5e2;--green:#3f7d4e;
+  --shadow:0 1px 3px rgba(38,51,47,.08),0 6px 20px rgba(38,51,47,.05);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;}
+.wrap{max-width:1080px;margin:0 auto;padding:16px 16px 80px;}
+.kicker{color:var(--teal);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:12px;}
+h1{margin:4px 0 2px;font-size:25px;font-weight:800;}
+.sub{color:var(--muted);font-size:14px;}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--card);
+  border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:12px 14px;margin:12px 0;}
+.toolbar label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.toolbar input[type=date],.toolbar input[type=text]{border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:14px;}
+.toolbar .grow{flex:1;min-width:120px;}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;
+  padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;}
+.btn.gold{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn:hover{filter:brightness(.97);}
+.psalm{background:var(--teal-soft);border:1px solid #cfe4e1;border-radius:12px;padding:10px 13px;font-size:14px;margin:4px 0 2px;}
+.psalm b{color:var(--teal);}
+.psalm [contenteditable]{min-width:40px;}
+nav.tabs{display:flex;flex-wrap:wrap;gap:6px;position:sticky;top:0;z-index:20;background:var(--bg);
+  padding:10px 0;margin-bottom:4px;border-bottom:1px solid var(--line);}
+nav.tabs button{border:1px solid var(--line);background:var(--card);color:var(--muted);
+  padding:8px 13px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;}
+nav.tabs button.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+section.panel{display:none;}section.panel.active{display:block;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px;margin:14px 0;}
+.card h2{margin:0 0 4px;font-size:18px;}
+.card h3{margin:14px 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--teal);display:flex;align-items:center;gap:8px;}
+.card .note{color:var(--muted);font-size:13px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr;}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+.stat .big{font-size:23px;font-weight:800;}
+.stat .lbl{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em;}
+.stat.gold{background:var(--gold-soft);border-color:#ecdcb6;}.stat.gold .big{color:var(--gold);}
+.stat.teal{background:var(--teal-soft);border-color:#cfe4e1;}.stat.teal .big{color:var(--teal);}
+[contenteditable]{outline:none;border-radius:4px;}
+[contenteditable]:focus{background:#fffbe9;box-shadow:0 0 0 2px #ecdcb6;}
+.chk{display:flex;align-items:flex-start;gap:9px;padding:7px 4px;border-bottom:1px solid var(--line);}
+.chk:last-child{border-bottom:none;}
+.chk input[type=checkbox]{margin-top:3px;width:17px;height:17px;accent-color:var(--teal);flex:none;cursor:pointer;}
+.chk .txt{flex:1;cursor:text;}
+.chk.done .txt{text-decoration:line-through;color:var(--muted);}
+.chk .del{border:none;background:none;color:#c9bfae;cursor:pointer;font-size:16px;line-height:1;padding:0 2px;flex:none;}
+.chk .del:hover{color:var(--rose);}
+.chk .star{cursor:pointer;flex:none;color:#d8cdb4;}.chk .star.on{color:var(--gold);}
+.additem{border:1px dashed var(--line);background:none;color:var(--muted);border-radius:8px;
+  padding:6px 10px;font-size:12.5px;cursor:pointer;margin-top:8px;}
+.progress{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin:8px 0 2px;}
+.progress>i{display:block;height:100%;background:var(--teal);width:0;transition:width .3s;}
+.sched{overflow-x:auto;}
+table.sched-t{border-collapse:collapse;width:100%;min-width:860px;font-size:12.5px;}
+table.sched-t th,table.sched-t td{border:1px solid var(--line);padding:5px 7px;vertical-align:top;}
+table.sched-t th{background:var(--teal);color:#fff;font-weight:700;text-align:left;white-space:nowrap;}
+table.sched-t td.time{background:#f0ece3;font-weight:700;color:var(--muted);width:54px;white-space:nowrap;}
+table.sched-t td.cell{min-width:104px;cursor:text;}
+table.sched-t .thu{background:#fbf4e6;}
+table.trk{border-collapse:collapse;width:100%;font-size:13px;}
+table.trk th,table.trk td{border:1px solid var(--line);padding:6px;text-align:center;}
+table.trk th{background:#f0ece3;font-weight:700;}
+table.trk td:first-child{text-align:left;font-weight:700;background:#faf8f3;white-space:nowrap;}
+table.trk input[type=checkbox]{width:17px;height:17px;accent-color:var(--teal);}
+table.trk input{width:100%;border:1px solid var(--line);border-radius:6px;padding:5px 4px;font-size:13px;text-align:center;background:#fff;}
+table.trk input.txt{text-align:left;}
+table.bud{border-collapse:collapse;width:100%;font-size:13.5px;}
+table.bud th,table.bud td{border:1px solid var(--line);padding:7px 9px;text-align:left;}
+table.bud th{background:#f0ece3;}
+table.bud td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+table.bud tr.total td{font-weight:800;background:#faf8f3;}
+table.bud input.amt{width:84px;border:1px solid var(--line);border-radius:6px;padding:4px 6px;text-align:right;font-size:13px;}
+table.bud .del{border:none;background:none;color:#c9bfae;cursor:pointer;font-size:15px;}
+table.bud .del:hover{color:var(--rose);}
+.river{background:var(--gold-soft);border:1px solid #ecdcb6;border-radius:12px;padding:14px;}
+.river h3{color:var(--gold);}
+.affirm{font-style:italic;color:#7a5e26;font-size:13.5px;margin-top:8px;}
+.hint{background:#f0ece3;border-radius:8px;padding:8px 10px;font-size:12.5px;color:var(--muted);margin:6px 0;}
+footer{color:var(--muted);font-size:12px;text-align:center;margin-top:24px;}
+@media print{nav.tabs,.toolbar,.additem,.del,.btn{display:none!important;}section.panel{display:block!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Sunday Reset · Ongoing Weekly Tool</div>
+  <h1 contenteditable data-k="meta.title">My Week, In Flow</h1>
+  <div class="sub">Six areas, made harmonious: Family · Income · Body &amp; Spirit · Grove · Notary Smart · Money</div>
+
+  <div class="toolbar">
+    <label>Week of (Mon)</label>
+    <input type="date" id="weekOf">
+    <label style="margin-left:6px">Goal $/day</label>
+    <input type="text" id="incomeGoal" style="width:66px" inputmode="numeric">
+    <span class="grow"></span>
+    <button class="btn gold" id="newWeek">↻ Start New Week</button>
+    <button class="btn" id="exportBtn">⭳ Export</button>
+    <button class="btn" id="importBtn">⭱ Import</button>
+    <button class="btn" onclick="window.print()">🖨 Print</button>
+    <input type="file" id="importFile" accept="application/json" hidden>
+  </div>
+
+  <div class="psalm">🙏 <b>This week's prayer —</b> <span contenteditable data-k="meta.prayer">Psalm 23</span>. Day starts 5:30a. Everything you want to do rests on a healthy body and mind.</div>
+
+  <nav class="tabs" id="tabs">
+    <button data-t="overview" class="active">Overview</button>
+    <button data-t="schedule">Schedule</button>
+    <button data-t="checklist">Master Checklist</button>
+    <button data-t="todos">Weekly To-Dos</button>
+    <button data-t="tracker">Tracker</button>
+    <button data-t="budget">Budget</button>
+  </nav>
+
+  <section class="panel active" id="overview">
+    <div class="grid3">
+      <div class="stat teal"><div class="lbl">Realistic goal</div><div class="big">$<span id="ov-goal">100</span><span style="font-size:14px">/day</span></div><div class="note">$<span id="ov-goalweek">700</span> this week</div></div>
+      <div class="stat gold"><div class="lbl">River can send</div><div class="big">$<span contenteditable data-k="meta.riverGoal">1000</span><span style="font-size:14px">/day</span></div><div class="note">It comes easily.</div></div>
+      <div class="stat"><div class="lbl">Checklist done</div><div class="big"><span id="ov-count">0</span></div><div class="note">of <span id="ov-total">0</span> items</div></div>
+    </div>
+    <div class="card">
+      <h2>How this tool works</h2>
+      <p class="note">Everything here is editable — click any text to change it. Check boxes and fill the tracker through the week; it all saves automatically in this browser. Each Sunday, hit <b>↻ Start New Week</b> to roll the dates forward and clear the checks while keeping your routine. Because data saves per-device, use <b>Export</b> to back it up or move it to your phone, and <b>Import</b> to load it there.</p>
+    </div>
+    <div class="card">
+      <h2>Body-hour ideas — rotate so it stays fresh</h2>
+      <p class="note">Low-impact matters. Stack it: <b>5:30 prayer → walk the bridge → meditate by the water</b> = three goals in one hour.</p>
+      <div class="grid3" style="margin-top:8px">
+        <div class="stat"><b>Walk</b><div class="note">Jordan Bridge at sunrise · Paradise Creek Nature Park</div></div>
+        <div class="stat"><b>Stillness</b><div class="note">Meditate by the river · tai chi / qigong</div></div>
+        <div class="stat"><b>Classes (free)</b><div class="note">Jazzercise 1st free · YMCA guest pass · Yoga with Adriene</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="schedule">
+    <div class="card">
+      <h2>Hour-by-hour week</h2>
+      <div class="hint">Your rhythm: mornings yours (prayer · body · breakfast + coffee) · Notary Smart in business hours · Instacart evenings after Kennedy's 4p drop-off (prime: open–11a &amp; 5p–close) · Thursday = no-delivery / flex day. <b>Click any cell to edit it for this week.</b></div>
+      <div class="sched"><table class="sched-t"><thead><tr id="sched-head"></tr></thead><tbody id="sched-body"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="panel" id="checklist">
+    <div class="card">
+      <h2>Master Checklist — all areas</h2>
+      <div class="progress"><i id="cl-bar"></i></div>
+      <div class="note"><span id="cl-count">0</span> of <span id="cl-total">0</span> done</div>
+    </div>
+    <div class="grid2" id="checklist-groups"></div>
+  </section>
+
+  <section class="panel" id="todos">
+    <div class="card"><h2>Weekly To-Dos by area</h2><p class="note">The focused version — what actually moves this week.</p></div>
+    <div class="grid2" id="todos-groups"></div>
+  </section>
+
+  <section class="panel" id="tracker">
+    <div class="card">
+      <h2>Daily Tracker — see what's working</h2>
+      <p class="note">Fill in each night (30 seconds). Earnings here flow straight into the budget's "actual" income.</p>
+      <div class="sched"><table class="trk">
+        <thead><tr><th>Day</th><th>Prayer<br>5:30a</th><th>Body<br>hour</th><th>Water<br>(cups)</th><th>Gig<br>hrs</th><th>Earned $</th><th>Apps /<br>outreach</th><th>Win of the day</th></tr></thead>
+        <tbody id="trk-body"></tbody>
+        <tfoot><tr><td>TOTALS</td><td id="trk-pray">0/7</td><td id="trk-bodyc">0/7</td><td>—</td><td id="trk-hrs">0</td><td id="trk-earn">$0</td><td id="trk-apps">0</td><td class="note" style="text-align:left">vs goal $<span id="trk-goal">700</span></td></tr></tfoot>
+      </table></div>
+      <div class="note" style="margin-top:6px">💡 If earnings dip on days you skipped the body hour, that's your data telling you the two are linked.</div>
+    </div>
+  </section>
+
+  <section class="panel" id="budget">
+    <div class="card"><h2>Budget — Realistic &amp; River Flow</h2><p class="note">Two truths side by side. Left grounded in your accounts; right is what the universe is bringing — named, specific, claimed.</p></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>📊 Realistic — This Week</h3>
+        <table class="bud">
+          <thead><tr><th>In / Out</th><th>Item</th><th style="text-align:right">Amount</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>In</td><td>Gig income (goal)</td><td class="num" id="b-in-plan">$700</td><td></td></tr>
+            <tr><td>In</td><td>Actual earned (from tracker)</td><td class="num" id="b-in-actual">$0</td><td></td></tr>
+          </tbody>
+          <tbody id="b-week-out"></tbody>
+          <tbody><tr class="total"><td colspan="2">Net this week (actual in − out)</td><td class="num" id="b-week-net">—</td><td></td></tr></tbody>
+        </table>
+        <button class="additem" data-addexp>+ add an expense</button>
+      </div>
+      <div class="card river">
+        <h3>🌊 River Flow — Intentions</h3>
+        <table class="bud">
+          <thead><tr><th>Source</th><th style="text-align:right">Amount</th><th></th></tr></thead>
+          <tbody id="b-river"></tbody>
+          <tbody><tr class="total"><td>Claimed</td><td class="num" id="b-river-total">$0</td><td></td></tr></tbody>
+        </table>
+        <button class="additem" data-addriver>+ add an intention</button>
+        <div class="affirm">"Money comes to me easily. Everyone wants to give it to me. The moment someone speaks, the ideas arrive."</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📅 Monthly bills</h3>
+      <table class="bud">
+        <thead><tr><th>Item</th><th>Due</th><th style="text-align:right">Amount</th><th style="text-align:right">Paid?</th><th></th></tr></thead>
+        <tbody id="b-bills"></tbody>
+        <tbody><tr class="total"><td colspan="2">Total monthly bills</td><td class="num" id="b-bills-total">$0</td><td></td><td></td></tr></tbody>
+      </table>
+      <button class="additem" data-addbill>+ add a bill</button>
+    </div>
+  </section>
+
+  <footer>Your ongoing reset tool · edits &amp; checks save in this browser · Export to back up or move devices.</footer>
+</div>
+
+<script>
+function defaultState(){
+  const weekday=["🙏 Pray · wake, water","🏃 Body hour","☕ Me-time — breakfast, coffee","👶 Drop Amir (camp/school)","📇 NS business hours","📇 NS / Grove","📇 NS / Grove","Lunch","Appt / flex","Flex / errands","Prep · wrap","👶 Drop Kennedy → work · 🛒 Instacart begins","👶 Pick up Amir · 🛒 Instacart","🛒 Instacart (prime)","🛒 Instacart","🛒 Instacart","🛒 Instacart / dinner","😴 Sleep 10:30p–5a"];
+  const thu=["🙏 Pray · wake, water","🏃 Body hour","☕ Me-time — breakfast, coffee","Flex / appointments","Flex / errands","Flex","Flex","Lunch","Appt / flex","Flex","Flex","Family (Kennedy off)","Family","Dinner","📇 NS catch-up / admin","Rest","Wind down","😴 Sleep 10:30p–5a"];
+  const sat=["🙏 Pray · wake, water","🏃 Body hour","☕ Me-time — breakfast, coffee","Family / errands","🛒 Instacart (AM prime)","🛒 Instacart","🛒 Instacart","Lunch","📇 NS admin / planning","Flex / family","Prep","👶 Drop Kennedy → work · 🛒 Instacart","Family / Amir · 🛒 Instacart","🛒 Instacart (prime)","🛒 Instacart","🛒 Instacart / dinner","Back-to-school / planning","😴 Sleep 10:30p–5a"];
+  const sun=["🙏 Pray · wake, water (fast-day option)","🏃 Body — meditate by water","Quiet morning","🛒 Instacart (AM)","🛒 Instacart","🛒 Instacart","🛒 Instacart / wrap","Rest","YWCA workbook / personal","Rest / reflection","Plan next week","Rest","📇 NS posting plan","Dinner","Family","🙏 Gratitude · river journal","Wind down","😴 Sleep 10:30p–5a"];
+  const times=["5a","6a","7a","8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p","7p","8p","9p","10p"];
+  const sched={};
+  times.forEach((t,r)=>{
+    const mon=weekday.slice();mon[5]="🌿 Grove — founder meeting";
+    const cols=[mon,weekday,weekday,thu,weekday,sat,sun];
+    for(let c=0;c<7;c++) sched[r+"_"+c]=cols[c][r];
+  });
+  const mk=(t,star)=>({id:'i'+Math.random().toString(36).slice(2,9),text:t,done:false,star:!!star});
+  return {
+    meta:{title:"My Week, In Flow",prayer:"Psalm 23",riverGoal:1000,incomeGoal:100,weekOf:mondayOf(new Date())},
+    sched,
+    checklist:{
+      "Family":[mk("Kids' appointments as needed (MD, eye, dental)"),mk("Back-to-school / seasonal plan")],
+      "Wellness":[mk("5:30a prayer daily"),mk("1 body hour daily"),mk("Rotate body-hour — walk / yoga / meditate / class"),mk("Fast one day, sunup to sundown")],
+      "Diet":[mk("Plan meals & groceries for the week"),mk("Drink more water — hit daily goal"),mk("Healthy breakfast each morning"),mk("Prep food for gig days")],
+      "Income & Work":[mk("Instacart 6-hr evening blocks (3+3 DoorDash if short)"),mk("Overnight caregiver — follow up"),mk("Research body-friendly income")],
+      "Nonprofit Orgs":[mk("Prep before Monday 10a meeting"),mk("Identify grants to apply for this week"),mk("Move toward contract-ready")],
+      "Notary Smart":[mk("Keep posting calendar fed"),mk("Follow up on emails"),mk("Sealed-records law → B2B/referral plan",true)],
+      "Finances":[mk("Pay bills due this week"),mk("Hit income goal"),mk("Log earnings nightly")]
+    },
+    todos:{
+      "Family":[mk("Book / confirm this week's appointments")],
+      "Wellness":[mk("Prayer + body hour, daily")],
+      "Diet":[mk("Groceries + hit water goal this week")],
+      "Income":[mk("Instacart evenings after Kennedy drop-off")],
+      "Nonprofit Orgs":[mk("Monday meeting prep + this week's grants")],
+      "Notary Smart":[mk("One B2B outreach + feed posting calendar")],
+      "Finances":[mk("Pay what's due · log earnings nightly")]
+    },
+    tracker:{},
+    budget:{
+      weekOut:[{id:'e1',label:"Business subs (OpenAI / Canva / Claude)",amt:65}],
+      river:[{id:'r1',label:"Family support (Dad)",amt:10000},{id:'r2',label:"Office — House of Suites, Western Branch",amt:700},{id:'r3',label:"Amir's locs",amt:250}],
+      bills:[{id:'b1',item:"Capital One",due:"6th",amt:150,paid:false},{id:'b2',item:"Discover",due:"7th",amt:200,paid:false},{id:'b3',item:"Capital One Quicksilver",due:"15th",amt:300,paid:false},{id:'b4',item:"Microsoft (annual)",due:"18th",amt:500,paid:false},{id:'b5',item:"OpenAI",due:"monthly",amt:20,paid:false},{id:'b6',item:"Canva",due:"monthly",amt:25,paid:false},{id:'b7',item:"Claude",due:"monthly",amt:20,paid:false}]
+    }
+  };
+}
+const KEY="wr_state_v3";
+let S;
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return defaultState();}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function mondayOf(d){const x=new Date(d);const day=(x.getDay()+6)%7;x.setDate(x.getDate()-day);return x.toISOString().slice(0,10);}
+function fmtDay(i){const base=new Date(S.meta.weekOf+"T00:00:00");const d=new Date(base);d.setDate(d.getDate()+i);
+  const names=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];return names[i]+" "+(d.getMonth()+1)+"/"+d.getDate();}
+const TIMES=["5a","6a","7a","8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p","7p","8p","9p","10p"];
+function getPath(o,p){return p.split('.').reduce((a,k)=>a&&a[k],o);}
+function setPath(o,p,v){const ks=p.split('.');let a=o;for(let i=0;i<ks.length-1;i++)a=a[ks[i]];a[ks[ks.length-1]]=v;}
+
+function renderAll(){renderMeta();renderSched();renderLists();renderTracker();renderBudget();updateCounts();}
+function renderMeta(){
+  document.getElementById('weekOf').value=S.meta.weekOf;
+  document.getElementById('incomeGoal').value=S.meta.incomeGoal;
+  document.querySelectorAll('[data-k]').forEach(el=>{
+    const v=getPath(S,el.dataset.k);
+    if(el.tagName==='INPUT'){el.value=v;}else if(document.activeElement!==el){el.textContent=v;}
+  });
+  renderMetaDerived();
+}
+function renderMetaDerived(){const g=+S.meta.incomeGoal||0;
+  document.getElementById('ov-goal').textContent=g;
+  document.getElementById('ov-goalweek').textContent=g*7;
+  document.getElementById('trk-goal').textContent=g*7;
+  document.getElementById('b-in-plan').textContent='$'+(g*7);
+  calcWeekNet();}
+
+function renderSched(){
+  document.getElementById('sched-head').innerHTML='<th>Time</th>'+[0,1,2,3,4,5,6].map(i=>`<th class="${i===3?'thu':''}">${fmtDay(i)}</th>`).join('');
+  const body=document.getElementById('sched-body');body.innerHTML='';
+  TIMES.forEach((t,r)=>{
+    let row=`<td class="time">${t}</td>`;
+    for(let c=0;c<7;c++){row+=`<td class="cell${c===3?' thu':''}" contenteditable data-sk="${r}_${c}">${(S.sched[r+"_"+c]||'')}</td>`;}
+    const tr=document.createElement('tr');tr.innerHTML=row;body.appendChild(tr);
+  });
+}
+function listCard(store,groupName,items,withStar){
+  const card=document.createElement('div');card.className='card';
+  const h=document.createElement('h3');h.textContent=groupName;card.appendChild(h);
+  const holder=document.createElement('div');
+  items.forEach(it=>holder.appendChild(itemRow(store,groupName,it,withStar)));
+  card.appendChild(holder);
+  const add=document.createElement('button');add.className='additem';add.textContent='+ add item';
+  add.onclick=()=>{const it={id:'i'+Math.random().toString(36).slice(2,9),text:'',done:false,star:false};
+    S[store][groupName].push(it);const row=itemRow(store,groupName,it,withStar);holder.appendChild(row);
+    row.querySelector('.txt').focus();save();};
+  card.appendChild(add);
+  return card;
+}
+function itemRow(store,group,it,withStar){
+  const row=document.createElement('div');row.className='chk'+(it.done?' done':'');
+  const star=withStar?`<span class="star ${it.star?'on':''}" title="star">★</span>`:'';
+  row.innerHTML=`<input type="checkbox" ${it.done?'checked':''}>${star}<span class="txt" contenteditable>${it.text}</span><button class="del" title="delete">×</button>`;
+  row.querySelector('input').onchange=e=>{it.done=e.target.checked;row.classList.toggle('done',it.done);save();updateCounts();};
+  const txt=row.querySelector('.txt');
+  txt.oninput=()=>{it.text=txt.textContent;save();};
+  row.querySelector('.del').onclick=()=>{const arr=S[store][group];arr.splice(arr.indexOf(it),1);row.remove();save();updateCounts();};
+  if(withStar){const s=row.querySelector('.star');s.onclick=()=>{it.star=!it.star;s.classList.toggle('on',it.star);save();};}
+  return row;
+}
+function renderLists(){
+  const cg=document.getElementById('checklist-groups');cg.innerHTML='';
+  const col2=['Income & Work','Nonprofit Orgs','Notary Smart','Finances'];
+  const wrapA=document.createElement('div');const wrapB=document.createElement('div');
+  Object.keys(S.checklist).forEach(g=>{
+    (col2.includes(g)?wrapB:wrapA).appendChild(listCard('checklist',g,S.checklist[g],g==='Notary Smart'));
+  });
+  cg.appendChild(wrapA);cg.appendChild(wrapB);
+  const tg=document.getElementById('todos-groups');tg.innerHTML='';
+  const tA=document.createElement('div');const tB=document.createElement('div');
+  Object.keys(S.todos).forEach((g,i)=>{(i%2?tB:tA).appendChild(listCard('todos',g,S.todos[g],false));});
+  tg.appendChild(tA);tg.appendChild(tB);
+}
+function renderTracker(){
+  const body=document.getElementById('trk-body');body.innerHTML='';
+  for(let i=0;i<7;i++){
+    const d=S.tracker[i]||(S.tracker[i]={pray:false,body:false,water:'',hrs:'',earn:'',apps:'',win:''});
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${fmtDay(i)}</td>
+      <td><input type="checkbox" data-f="pray" ${d.pray?'checked':''}></td>
+      <td><input type="checkbox" data-f="body" ${d.body?'checked':''}></td>
+      <td><input type="number" data-f="water" value="${d.water}"></td>
+      <td><input type="number" data-f="hrs" value="${d.hrs}"></td>
+      <td><input type="number" data-f="earn" value="${d.earn}"></td>
+      <td><input type="number" data-f="apps" value="${d.apps}"></td>
+      <td><input type="text" class="txt" data-f="win" value="${(d.win||'').replace(/"/g,'&quot;')}"></td>`;
+    tr.querySelectorAll('input').forEach(inp=>{
+      const f=inp.dataset.f;
+      const h=()=>{d[f]=inp.type==='checkbox'?inp.checked:inp.value;save();tallyTracker();};
+      inp.addEventListener('change',h);inp.addEventListener('input',h);
+    });
+    body.appendChild(tr);
+  }
+  tallyTracker();
+}
+function tallyTracker(){
+  let pray=0,bodyc=0,hrs=0,earn=0,apps=0;
+  for(let i=0;i<7;i++){const d=S.tracker[i]||{};if(d.pray)pray++;if(d.body)bodyc++;hrs+=+d.hrs||0;earn+=+d.earn||0;apps+=+d.apps||0;}
+  document.getElementById('trk-pray').textContent=pray+'/7';
+  document.getElementById('trk-bodyc').textContent=bodyc+'/7';
+  document.getElementById('trk-hrs').textContent=hrs;
+  document.getElementById('trk-earn').textContent='$'+earn;
+  document.getElementById('trk-apps').textContent=apps;
+  document.getElementById('b-in-actual').textContent='$'+earn;
+  calcWeekNet();
+}
+function renderBudget(){
+  const g=+S.meta.incomeGoal||0;
+  document.getElementById('b-in-plan').textContent='$'+(g*7);
+  const out=document.getElementById('b-week-out');out.innerHTML='';
+  S.budget.weekOut.forEach(e=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>Out</td><td><span class="txt" contenteditable>${e.label}</span></td><td class="num"><input class="amt" type="number" value="${e.amt}"></td><td><button class="del">×</button></td>`;
+    tr.querySelector('.txt').oninput=ev=>{e.label=ev.target.textContent;save();};
+    tr.querySelector('input').oninput=ev=>{e.amt=+ev.target.value||0;save();calcWeekNet();};
+    tr.querySelector('.del').onclick=()=>{S.budget.weekOut.splice(S.budget.weekOut.indexOf(e),1);renderBudget();save();};
+    out.appendChild(tr);
+  });
+  const rv=document.getElementById('b-river');rv.innerHTML='';let rt=0;
+  S.budget.river.forEach(e=>{rt+=+e.amt||0;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><span class="txt" contenteditable>${e.label}</span></td><td class="num"><input class="amt" type="number" value="${e.amt}"></td><td><button class="del">×</button></td>`;
+    tr.querySelector('.txt').oninput=ev=>{e.label=ev.target.textContent;save();};
+    tr.querySelector('input').oninput=ev=>{e.amt=+ev.target.value||0;save();renderBudget();};
+    tr.querySelector('.del').onclick=()=>{S.budget.river.splice(S.budget.river.indexOf(e),1);renderBudget();save();};
+    rv.appendChild(tr);
+  });
+  document.getElementById('b-river-total').textContent='$'+rt.toLocaleString();
+  const bl=document.getElementById('b-bills');bl.innerHTML='';let bt=0;
+  S.budget.bills.forEach(e=>{bt+=+e.amt||0;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><span class="txt" contenteditable>${e.item}</span></td><td><span class="txt" contenteditable>${e.due}</span></td><td class="num"><input class="amt" type="number" value="${e.amt}"></td><td class="num"><input type="checkbox" ${e.paid?'checked':''}></td><td><button class="del">×</button></td>`;
+    const sp=tr.querySelectorAll('.txt');
+    sp[0].oninput=ev=>{e.item=ev.target.textContent;save();};
+    sp[1].oninput=ev=>{e.due=ev.target.textContent;save();};
+    tr.querySelector('input.amt').oninput=ev=>{e.amt=+ev.target.value||0;save();renderBudget();};
+    tr.querySelector('input[type=checkbox]').onchange=ev=>{e.paid=ev.target.checked;save();};
+    tr.querySelector('.del').onclick=()=>{S.budget.bills.splice(S.budget.bills.indexOf(e),1);renderBudget();save();};
+    bl.appendChild(tr);
+  });
+  document.getElementById('b-bills-total').textContent='$'+bt.toLocaleString();
+  calcWeekNet();
+}
+function calcWeekNet(){
+  let earn=0;for(let i=0;i<7;i++){earn+=+(S.tracker[i]||{}).earn||0;}
+  let out=0;S.budget.weekOut.forEach(e=>out+=+e.amt||0);
+  const net=earn-out;
+  const el=document.getElementById('b-week-net');if(el)el.textContent=(net>=0?'+$':'-$')+Math.abs(net).toLocaleString();
+}
+function updateCounts(){
+  let total=0,done=0;
+  Object.values(S.checklist).forEach(arr=>arr.forEach(it=>{total++;if(it.done)done++;}));
+  document.getElementById('cl-count').textContent=done;
+  document.getElementById('cl-total').textContent=total;
+  document.getElementById('ov-count').textContent=done;
+  document.getElementById('ov-total').textContent=total;
+  document.getElementById('cl-bar').style.width=(total?Math.round(done/total*100):0)+'%';
+}
+
+document.getElementById('tabs').addEventListener('click',e=>{
+  if(e.target.tagName!=='BUTTON')return;const t=e.target.dataset.t;
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('active',b===e.target));
+  document.querySelectorAll('section.panel').forEach(p=>p.classList.toggle('active',p.id===t));
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.matches('[data-k]')){const v=el.tagName==='INPUT'?el.value:el.textContent;setPath(S,el.dataset.k,v);save();renderMetaDerived();}
+  if(el.matches('[data-sk]')){S.sched[el.dataset.sk]=el.textContent;save();}
+});
+document.getElementById('weekOf').addEventListener('change',e=>{S.meta.weekOf=e.target.value;save();renderSched();renderTracker();});
+document.getElementById('incomeGoal').addEventListener('input',e=>{S.meta.incomeGoal=+e.target.value||0;save();renderMetaDerived();});
+document.querySelector('[data-addexp]').onclick=()=>{S.budget.weekOut.push({id:'e'+Date.now(),label:'',amt:0});renderBudget();save();};
+document.querySelector('[data-addriver]').onclick=()=>{S.budget.river.push({id:'r'+Date.now(),label:'',amt:0});renderBudget();save();};
+document.querySelector('[data-addbill]').onclick=()=>{S.budget.bills.push({id:'b'+Date.now(),item:'',due:'',amt:0,paid:false});renderBudget();save();};
+document.getElementById('newWeek').onclick=()=>{
+  if(!confirm("Start a new week?\n\nThis moves the dates forward 7 days and clears all checkboxes, the tracker, and 'paid' marks. Your schedule, task lists, bills, and river intentions stay.")) return;
+  const d=new Date(S.meta.weekOf+"T00:00:00");d.setDate(d.getDate()+7);S.meta.weekOf=d.toISOString().slice(0,10);
+  Object.values(S.checklist).forEach(a=>a.forEach(it=>it.done=false));
+  Object.values(S.todos).forEach(a=>a.forEach(it=>it.done=false));
+  S.tracker={};
+  S.budget.bills.forEach(b=>b.paid=false);
+  save();renderAll();
+  document.querySelector('nav.tabs button[data-t="overview"]').click();
+};
+document.getElementById('exportBtn').onclick=()=>{
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='week-reset-'+S.meta.weekOf+'.json';a.click();
+};
+document.getElementById('importBtn').onclick=()=>document.getElementById('importFile').click();
+document.getElementById('importFile').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{try{S=JSON.parse(rd.result);save();renderAll();alert('Imported.');}catch(err){alert('Could not read that file.');}};
+  rd.readAsText(f);
+};
+S=load();
+if(!S.meta.weekOf)S.meta.weekOf=mondayOf(new Date());
+renderAll();
+</script>
+</body>
+</html>
