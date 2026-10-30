@@ -97,7 +97,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;margin-top:24px;}
 <div class="wrap">
   <div class="kicker">Sunday Reset · Ongoing Weekly Tool</div>
   <h1 contenteditable data-k="meta.title">My Week, In Flow</h1>
-  <div class="sub">Six areas, made harmonious: Family · Income · Body &amp; Spirit · Grove · Notary Smart · Money</div>
+  <div class="sub">Family · Wellness · Diet · Income · Notary Smart · Finances</div>
 
   <div class="toolbar">
     <label>Week of (Mon)</label>
@@ -147,7 +147,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;margin-top:24px;}
   <section class="panel" id="schedule">
     <div class="card">
       <h2>Hour-by-hour week</h2>
-      <div class="hint">Your rhythm: mornings yours (prayer · body · breakfast + coffee) · Notary Smart in business hours · Instacart evenings after Kennedy's 4p drop-off (prime: open–11a &amp; 5p–close) · Thursday = no-delivery / flex day. <b>Click any cell to edit it for this week.</b></div>
+      <div class="hint">Prayer, body hour, and sleep are pre-filled as your daily anchors. Every other slot starts blank. <b>Click any cell to fill in your week.</b></div>
       <div class="sched"><table class="sched-t"><thead><tr id="sched-head"></tr></thead><tbody id="sched-body"></tbody></table></div>
     </div>
   </section>
@@ -222,38 +222,29 @@ footer{color:var(--muted);font-size:12px;text-align:center;margin-top:24px;}
 
 <script>
 function defaultState(){
-  const weekday=["🙏 Pray · wake, water","🏃 Body hour","☕ Me-time — breakfast, coffee","👶 Drop Amir (camp/school)","📇 NS business hours","📇 NS / Grove","📇 NS / Grove","Lunch","Appt / flex","Flex / errands","Prep · wrap","👶 Drop Kennedy → work · 🛒 Instacart begins","👶 Pick up Amir · 🛒 Instacart","🛒 Instacart (prime)","🛒 Instacart","🛒 Instacart","🛒 Instacart / dinner","😴 Sleep 10:30p–5a"];
-  const thu=["🙏 Pray · wake, water","🏃 Body hour","☕ Me-time — breakfast, coffee","Flex / appointments","Flex / errands","Flex","Flex","Lunch","Appt / flex","Flex","Flex","Family (Kennedy off)","Family","Dinner","📇 NS catch-up / admin","Rest","Wind down","😴 Sleep 10:30p–5a"];
-  const sat=["🙏 Pray · wake, water","🏃 Body hour","☕ Me-time — breakfast, coffee","Family / errands","🛒 Instacart (AM prime)","🛒 Instacart","🛒 Instacart","Lunch","📇 NS admin / planning","Flex / family","Prep","👶 Drop Kennedy → work · 🛒 Instacart","Family / Amir · 🛒 Instacart","🛒 Instacart (prime)","🛒 Instacart","🛒 Instacart / dinner","Back-to-school / planning","😴 Sleep 10:30p–5a"];
-  const sun=["🙏 Pray · wake, water (fast-day option)","🏃 Body — meditate by water","Quiet morning","🛒 Instacart (AM)","🛒 Instacart","🛒 Instacart","🛒 Instacart / wrap","Rest","YWCA workbook / personal","Rest / reflection","Plan next week","Rest","📇 NS posting plan","Dinner","Family","🙏 Gratitude · river journal","Wind down","😴 Sleep 10:30p–5a"];
   const times=["5a","6a","7a","8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p","7p","8p","9p","10p"];
+  const anchors={0:"🙏 Pray · wake, water",1:"🏃 Body hour",17:"😴 Sleep 10:30p–5a"};
   const sched={};
-  times.forEach((t,r)=>{
-    const mon=weekday.slice();mon[5]="🌿 Grove — founder meeting";
-    const cols=[mon,weekday,weekday,thu,weekday,sat,sun];
-    for(let c=0;c<7;c++) sched[r+"_"+c]=cols[c][r];
-  });
+  times.forEach((t,r)=>{ for(let c=0;c<7;c++) sched[r+"_"+c]=anchors[r]||""; });
   const mk=(t,star)=>({id:'i'+Math.random().toString(36).slice(2,9),text:t,done:false,star:!!star});
   return {
     meta:{title:"My Week, In Flow",prayer:"Psalm 23",riverGoal:1000,incomeGoal:100,weekOf:mondayOf(new Date())},
     sched,
     checklist:{
-      "Family":[mk("Kids' appointments as needed (MD, eye, dental)"),mk("Back-to-school / seasonal plan")],
-      "Wellness":[mk("5:30a prayer daily"),mk("1 body hour daily"),mk("Rotate body-hour — walk / yoga / meditate / class"),mk("Fast one day, sunup to sundown")],
-      "Diet":[mk("Plan meals & groceries for the week"),mk("Drink more water — hit daily goal"),mk("Healthy breakfast each morning"),mk("Prep food for gig days")],
-      "Income & Work":[mk("Instacart 6-hr evening blocks (3+3 DoorDash if short)"),mk("Overnight caregiver — follow up"),mk("Research body-friendly income")],
-      "Nonprofit Orgs":[mk("Prep before Monday 10a meeting"),mk("Identify grants to apply for this week"),mk("Move toward contract-ready")],
-      "Notary Smart":[mk("Keep posting calendar fed"),mk("Follow up on emails"),mk("Sealed-records law → B2B/referral plan",true)],
-      "Finances":[mk("Pay bills due this week"),mk("Hit income goal"),mk("Log earnings nightly")]
+      "Family":[],
+      "Wellness":[],
+      "Diet":[],
+      "Income & Work":[],
+      "Notary Smart":[],
+      "Finances":[]
     },
     todos:{
-      "Family":[mk("Book / confirm this week's appointments")],
-      "Wellness":[mk("Prayer + body hour, daily")],
-      "Diet":[mk("Groceries + hit water goal this week")],
-      "Income":[mk("Instacart evenings after Kennedy drop-off")],
-      "Nonprofit Orgs":[mk("Monday meeting prep + this week's grants")],
-      "Notary Smart":[mk("One B2B outreach + feed posting calendar")],
-      "Finances":[mk("Pay what's due · log earnings nightly")]
+      "Family":[],
+      "Wellness":[],
+      "Diet":[],
+      "Income":[],
+      "Notary Smart":[],
+      "Finances":[]
     },
     tracker:{},
     budget:{
@@ -263,7 +254,7 @@ function defaultState(){
     }
   };
 }
-const KEY="wr_state_v3";
+const KEY="wr_state_v4";
 let S;
 function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return defaultState();}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -326,7 +317,7 @@ function itemRow(store,group,it,withStar){
 }
 function renderLists(){
   const cg=document.getElementById('checklist-groups');cg.innerHTML='';
-  const col2=['Income & Work','Nonprofit Orgs','Notary Smart','Finances'];
+  const col2=['Income & Work','Notary Smart','Finances'];
   const wrapA=document.createElement('div');const wrapB=document.createElement('div');
   Object.keys(S.checklist).forEach(g=>{
     (col2.includes(g)?wrapB:wrapA).appendChild(listCard('checklist',g,S.checklist[g],g==='Notary Smart'));
